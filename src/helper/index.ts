@@ -1,4 +1,4 @@
-import configs from 'config';
+import configs from '../config';
 import { message } from 'antd';
 
 export const handleErrorMessage = (error: any) => {

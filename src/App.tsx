@@ -4,7 +4,7 @@ import RootWrapper from './wrappers/RootWrapper';
 import { Router } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import configs from 'config';
+import config from './config';
 
 export const history = createBrowserHistory();
 const queryClient = new QueryClient({
@@ -24,7 +24,7 @@ function App() {
           <RootWrapper />
         </Suspense>
       </Router>
-      {configs.APP_ENV !== 'prod' && <ReactQueryDevtools initialIsOpen={false} />}
+      {config.APP_ENV !== 'prod' && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

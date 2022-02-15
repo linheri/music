@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Pagination, Button, Row } from 'antd';
 import { useQuery } from 'react-query';
 import TaskList from './TaskList';
-import { getListTask } from 'api/task';
+import { getListTask } from '../../api/task';
 import styles from './styles.module.scss';
 
 const pageSize = 10;

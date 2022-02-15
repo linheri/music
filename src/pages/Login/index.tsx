@@ -5,8 +5,8 @@ import _ from 'lodash';
 import styles from './style.module.scss';
 import { Card, Input, Button, Form, Row, Checkbox } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { login } from 'api/authentication';
-import { handleErrorMessage } from 'helper';
+import { login } from '../../api/authentication';
+import { handleErrorMessage } from '../../helper';
 
 export default function Login() {
   const history = useHistory();

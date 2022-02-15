@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Cookies from 'js-cookie';
-import avatarImg from 'assets/images/avatar.svg';
+import avatarImg from '../../assets/images/avatar.svg';
 import { useHistory } from 'react-router-dom';
 import styles from './styles.module.scss';
 import { Menu, Dropdown } from 'antd';
 import { useQueryClient } from 'react-query';
-import useProfile from 'hooks/useProfile';
+import useProfile from '../../hooks/useProfile';
 
 export default function PageHeader() {
   const history = useHistory();
@@ -40,7 +40,7 @@ export default function PageHeader() {
       <div className={styles.menuWrapper}>
         <div className={styles.menuItem}>
           <Dropdown overlay={menu} trigger={['click']}>
-            <div>
+            <div>  
               <span>{`Hi ${profile?.fullName || profile?.username}!`}</span>
               &nbsp;
               <img className={styles.icon} src={avatarImg} alt="" />
