@@ -7,7 +7,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import ChordSheetJS from 'chordsheetjs';
 
-export default function DetailSong() {
+export default function EditSong() {
   const { t } = useTranslation();
   const { TextArea } = Input;
   const history = useHistory();
@@ -29,19 +29,16 @@ export default function DetailSong() {
     author: 'Thuy Linh',
   };
   form.setFieldsValue({
-    // lyrics: dataSongs?.lyric,
+    lyrics: dataSongs?.lyric,
     song_name: dataSongs?.name,
     artist_name: dataSongs?.artistName,
     author_name: dataSongs?.author,
   });
-  const a = dataSongs?.lyric.replaceAll('[', '<span>[');
-  const b = a.replaceAll(']', ']</span>');
 
-  const handleOnChange = (value: any) => {};
+  const handleOnChange = (value: any) => {
+    console.log(value);
+  };
   const handleFinish = (values: any) => {};
-  const song = new ChordSheetJS.ChordProParser().parse(dataSongs?.lyric);
-  console.log('dataSongs?.lyric', dataSongs?.lyric);
-  console.log(song);
 
   return (
     <div className={styles.listAccount}>
@@ -76,33 +73,14 @@ export default function DetailSong() {
           <Input />
         </Form.Item>
         <Form.Item
-          // name="lyrics"
+          name="lyrics"
           label="Lyrics"
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}>
-          <div className={styles.textarea} id="lyrics" contentEditable="true">
-            {song?.currentParagraph?.lines?.map((item: any, index: number) => {
-              return (
-                <div key={index} style={{ display: 'flex' }}>
-                  {item?.items?.map((item1: any, index1: any) => {
-                    return (
-                      <div key={`${index}${index1}`} className={styles.line}>
-                        {item1.chords && (
-                          <span style={{ color: '#e46e62' }}>
-                            &nbsp;[{item1.chords}]&nbsp;
-                          </span>
-                        )}
-                        {item1.lyrics}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
+          <TextArea className={styles.textarea} autoSize={true} />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" onClick={() => history.push('/songs/edit')}>
+          <Button type="primary" htmlType="submit">
             Submit
           </Button>
         </Form.Item>

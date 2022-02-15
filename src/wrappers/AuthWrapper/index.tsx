@@ -11,6 +11,7 @@ const Tasks = lazy(() => import('../../pages/Tasks'));
 const Accounts = lazy(() => import('../../pages/Accounts'));
 const Songs = lazy(() => import('../../pages/Songs'));
 const DetailSong = lazy(() => import('../../pages/Songs/DetailSong'));
+const EditSong = lazy(() => import('../../pages/Songs/EditSong'));
 
 export default function PageWrapper() {
   const isAuthenticated = !!Cookies.get('token');
@@ -38,7 +39,10 @@ export default function PageWrapper() {
               <Route path="/song/add" component={DetailSong} />
             </Switch>
             <Switch>
-              <Route path="/song/edit/:id" component={DetailSong} />
+              <Route path="/song/detail/:id" component={DetailSong} />
+            </Switch>
+            <Switch>
+              <Route path="/song/edit/:id" component={EditSong} />
             </Switch>
           </Suspense>
         </div>
