@@ -15,9 +15,11 @@ const EditSong = lazy(() => import('../../pages/Songs/EditSong'));
 
 export default function PageWrapper() {
   const isAuthenticated = !!Cookies.get('token');
-  // const { data: profile } = useQuery('profile', loadProfile, { enabled: isAuthenticated });
+  // const { data: profile } = useQuery('profile', loadProfile, {
+  //   enabled: isAuthenticated,
+  // });
 
-  // if (!isAuthenticated) return <Redirect to="/login" />;
+  if (!isAuthenticated) return <Redirect to="/login" />;
   // if (!profile) return null;
   return (
     <div className={styles.pageWrapper}>
@@ -36,7 +38,7 @@ export default function PageWrapper() {
               <Route path="/songs" component={Songs} />
             </Switch>
             <Switch>
-              <Route path="/song/add" component={DetailSong} />
+              <Route path="/song/add" component={EditSong} />
             </Switch>
             <Switch>
               <Route path="/song/detail/:id" component={DetailSong} />

@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'antd';
 import classNames from 'classnames';
-import { HomeOutlined, TableOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  HomeOutlined,
+  TableOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import styles from './styles.module.scss';
 import useToggleSideNav from '../../hooks/useToggleSideNav';
 
@@ -42,15 +46,18 @@ export default function SideNav() {
         [styles.sideNav]: true,
         [styles.sideNavCollapsed]: collapsed,
       })}
-      style={{ width: collapsed ? 80 : 250, transition: 'width 0.3s' }}
-    >
-      <Link className={styles.logo} to="/index">
+      style={{ width: collapsed ? 80 : 250, transition: 'width 0.3s' }}>
+      <Link className={styles.logo} to="/accounts">
         HOME
       </Link>
-      <Menu selectedKeys={[selectedKey]} defaultOpenKeys={[]} mode="inline" inlineCollapsed={collapsed}>
+      <Menu
+        selectedKeys={[selectedKey]}
+        defaultOpenKeys={[]}
+        mode="inline"
+        inlineCollapsed={collapsed}>
         {routes.map((route) => {
           return (
-            <Menu.Item key={route.key} >
+            <Menu.Item key={route.key}>
               <Link to={route.url}>{route.text}</Link>
             </Menu.Item>
           );

@@ -2,25 +2,14 @@ import React from 'react';
 import _ from 'lodash';
 import styles from './styles.module.scss';
 import { useTranslation } from 'react-i18next';
-import { Checkbox, Input, Table } from 'antd';
+import { Checkbox, Input, message, Spin, Table } from 'antd';
+import { useMutation, useQuery } from 'react-query';
+import { getListUser, updateUser } from 'api/accounts';
 
 export default function Accounts() {
   const { t } = useTranslation();
   const { Search } = Input;
-  const dataAccount = [
-    {
-      key: '1',
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      key: '2',
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-  ];
+  // const [checkedValue, setCheckedValue] = useState([])
 
   const columns = [
     {
@@ -29,28 +18,47 @@ export default function Accounts() {
       key: 'name',
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
       title: 'Status',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'status',
+      key: 'status',
       render: (text: any, record: any) => (
         <label className={`switch`}>
-          <Checkbox className={`checkbox-custom`}>
+          <Checkbox
+            className={`checkbox-custom`}
+            checked={record?.status == 1}
+            onChange={(e) => onOffUser(e, record?.userId)}>
             <span className={`slider`}></span>
           </Checkbox>
         </label>
       ),
     },
   ];
+
+  const {
+    data: listAccount,
+    refetch: refetchAccounts,
+    isLoading,
+    isFetching,
+  } = useQuery(['list_accounts', null], () => getListUser(), {
+    refetchOnWindowFocus: false,
+  });
+  const onOffUser = async (e: any, id: any) => {
+    try {
+      const payload = {
+        userId: id,
+        status: e?.target?.checked ? 1 : 0,
+      };
+      await updateUser(payload);
+      refetchAccounts();
+    } catch (error: any) {
+      message.error(error);
+    }
+  };
 
   return (
     <div className={styles.listAccount}>
@@ -61,7 +69,9 @@ export default function Accounts() {
           className={styles.searchInput}
         />
       </div>
-      <Table dataSource={dataAccount} columns={columns} />;
+      <Spin spinning={isLoading || isFetching}>
+        <Table dataSource={listAccount} columns={columns} pagination={false} />;
+      </Spin>
     </div>
   );
 }

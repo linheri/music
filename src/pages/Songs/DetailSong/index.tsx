@@ -2,16 +2,28 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import styles from './styles.module.scss';
 import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, Form, Input, Table } from 'antd';
+import { Button, Checkbox, Form, Input, Spin, Table } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import ChordSheetJS from 'chordsheetjs';
+import { useQuery } from 'react-query';
+import { getSongDetail } from 'api/accounts';
 
-export default function DetailSong() {
+export default function DetailSong(props: any) {
   const { t } = useTranslation();
   const { TextArea } = Input;
   const history = useHistory();
   const [form] = Form.useForm();
+  const id = props?.match?.params?.id;
+
+  const {
+    data: detailSong,
+    refetch: refetchSong,
+    isLoading,
+    isFetching,
+  } = useQuery(['song', { id: id }], () => getSongDetail(id), {
+    refetchOnWindowFocus: false,
+  });
 
   const dataSongs = {
     songId: '82d5a4f8-9787-4f5d-8b7c-42a76838d557',
@@ -29,84 +41,90 @@ export default function DetailSong() {
     author: 'Thuy Linh',
   };
   form.setFieldsValue({
-    // lyrics: dataSongs?.lyric,
-    song_name: dataSongs?.name,
-    artist_name: dataSongs?.artistName,
-    author_name: dataSongs?.author,
+    song_name: detailSong?.name,
+    artist_name: detailSong?.author,
+    author_name: detailSong?.artistName,
   });
-  const a = dataSongs?.lyric.replaceAll('[', '<span>[');
-  const b = a.replaceAll(']', ']</span>');
 
   const handleOnChange = (value: any) => {};
   const handleFinish = (values: any) => {};
-  const song = new ChordSheetJS.ChordProParser().parse(dataSongs?.lyric);
-  console.log('dataSongs?.lyric', dataSongs?.lyric);
-  console.log(song);
+  const song = new ChordSheetJS.ChordProParser().parse(detailSong?.lyric || '');
 
   return (
     <div className={styles.listAccount}>
-      <div className={styles.back}>
-        <LeftOutlined onClick={() => history.push('/songs')} />
-        <span>Back to list songs</span>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+        }}>
+        <div className={styles.back}>
+          <LeftOutlined onClick={() => history.push('/songs')} />
+          <span>Back to list songs</span>
+        </div>
+        <Button type="primary" onClick={() => history.push(`/song/edit/${id}`)}>
+          Edit
+        </Button>
       </div>
-      <Form
-        className={styles.form}
-        onValuesChange={handleOnChange}
-        form={form}
-        onFinish={handleFinish}>
-        <Form.Item
-          name="song_name"
-          label="Name of song"
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}>
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="artist_name"
-          label="Name of artist"
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}>
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="author_name"
-          label="Name of author"
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}>
-          <Input />
-        </Form.Item>
-        <Form.Item
-          // name="lyrics"
-          label="Lyrics"
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}>
-          <div className={styles.textarea} id="lyrics" contentEditable="true">
-            {song?.currentParagraph?.lines?.map((item: any, index: number) => {
-              return (
-                <div key={index} style={{ display: 'flex' }}>
-                  {item?.items?.map((item1: any, index1: any) => {
-                    return (
-                      <div key={`${index}${index1}`} className={styles.line}>
-                        {item1.chords && (
-                          <span style={{ color: '#e46e62' }}>
-                            &nbsp;[{item1.chords}]&nbsp;
-                          </span>
-                        )}
-                        {item1.lyrics}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" onClick={() => history.push('/songs/edit')}>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+      <Spin spinning={isLoading || isFetching}>
+        <Form
+          className={styles.form}
+          onValuesChange={handleOnChange}
+          form={form}
+          onFinish={handleFinish}>
+          <Form.Item
+            name="song_name"
+            label="Name of song"
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}>
+            <Input disabled={true} className={styles.input} />
+          </Form.Item>
+          <Form.Item
+            name="artist_name"
+            label="Name of artist"
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}>
+            <Input disabled={true} className={styles.input} />
+          </Form.Item>
+          <Form.Item
+            name="author_name"
+            label="Name of author"
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}>
+            <Input disabled={true} className={styles.input} />
+          </Form.Item>
+          <Form.Item
+            // name="lyrics"
+            label="Lyrics"
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}>
+            <div className={styles.textarea} id="lyrics">
+              {song?.currentParagraph?.lines?.map(
+                (item: any, index: number) => {
+                  return (
+                    <div key={index} style={{ display: 'flex' }}>
+                      {item?.items?.map((item1: any, index1: any) => {
+                        return (
+                          <div
+                            key={`${index}${index1}`}
+                            className={styles.line}>
+                            {item1.chords && (
+                              <span style={{ color: '#e46e62' }}>
+                                &nbsp;[{item1.chords}]&nbsp;
+                              </span>
+                            )}
+                            {item1.lyrics}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          </Form.Item>
+        </Form>
+      </Spin>
     </div>
   );
 }
